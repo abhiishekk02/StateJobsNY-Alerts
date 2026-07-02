@@ -62,7 +62,7 @@ export SMTP_PORT='587'
 python -m job_alert --config config/config.yaml
 ```
 
-The recipient is already configured as `abhishek.gourishetty2@gmail.com`. Override it without editing YAML with `EMAIL_RECIPIENT`. Never put passwords in the repository. Run tests with:
+The recipient is already configured as `abhishek@gmail.com`. Override it without editing YAML with `EMAIL_RECIPIENT`. Never put passwords in the repository. Run tests with:
 
 ```bash
 pytest --cov=job_alert
