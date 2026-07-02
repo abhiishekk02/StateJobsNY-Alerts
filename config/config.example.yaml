@@ -1,0 +1,27 @@
+# Copy this file to config/config.yaml and customize it. Secrets always come from environment variables.
+search:
+  url: "https://statejobs.ny.gov/public/search.cfm"
+  results_url: "https://statejobs.ny.gov/public/vacancyTable.cfm"
+  locations: ["Albany"]
+  grades: ["18"]
+  regions: ["0"]
+  keywords: ["Software Engineer", "Python", "Data Analyst"]
+email:
+  recipient: "you@example.com"
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  use_starttls: true
+  timeout_seconds: 30
+http:
+  timeout_seconds: 30
+  retry_count: 3
+  backoff_seconds: 2
+  user_agent: "NYStateJobAlert/1.0 (+https://github.com/your-name/your-repository)"
+paths:
+  state_file: "data/seen_jobs.json"
+  template_file: "templates/job_alert.html"
+  log_directory: "logs"
+logging:
+  level: "INFO"
+schedule: "*/15 * * * *"
+

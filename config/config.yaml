@@ -1,0 +1,60 @@
+search:
+  url: "https://statejobs.ny.gov/public/search.cfm"
+  results_url: "https://statejobs.ny.gov/public/vacancyTable.cfm"
+  locations:
+    - "Albany"
+  grades:
+    - "18"
+  # StateJobsNY region IDs. Capital/Saratoga is 0; exact Albany matching is local.
+  regions:
+    - "0"
+  keywords:
+    - "Information Technology Specialist"
+    - "Information Technology Specialist 1"
+    - "Information Technology Specialist 2"
+    - "Information Technology Specialist 3"
+    - "Information Technology Services"
+    - "ITS"
+    - "Data Analyst"
+    - "Data Engineer"
+    - "Business Analyst"
+    - "Software Engineer"
+    - "Software Developer"
+    - "Application Developer"
+    - "Programmer"
+    - "Full Stack Developer"
+    - "Backend Developer"
+    - "Frontend Developer"
+    - "Java"
+    - "Python"
+    - "React"
+    - "Node"
+    - "SQL"
+    - "Cloud"
+    - "DevOps"
+    - "Database"
+
+email:
+  recipient: "abhishek.gourishetty2@gmail.com"
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  use_starttls: true
+  timeout_seconds: 30
+
+http:
+  timeout_seconds: 30
+  retry_count: 3
+  backoff_seconds: 2
+  user_agent: "NYStateJobAlert/1.0 (+https://github.com/your-username/ny-state-job-alerts)"
+
+paths:
+  state_file: "data/seen_jobs.json"
+  template_file: "templates/job_alert.html"
+  log_directory: "logs"
+
+logging:
+  level: "INFO"
+
+# Documentation value; GitHub Actions is the authoritative scheduler.
+schedule: "*/15 * * * *"
+
