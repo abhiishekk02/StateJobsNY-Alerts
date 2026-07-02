@@ -1,5 +1,29 @@
 {
-  "jobs": {},
+  "jobs": {
+    "136872": {
+      "emailed_at": "2026-07-02T19:57:28.192795+00:00",
+      "title": "Information Technology Specialist 2 (NY HELPS), Box Info Tech Spec 2"
+    },
+    "136873": {
+      "emailed_at": "2026-07-02T19:57:29.317387+00:00",
+      "title": "Information Technology Specialist 2 (Programming) (NY HELPS), Box Info Tech Spec 2 (Prog)"
+    },
+    "218395": {
+      "emailed_at": "2026-07-02T19:57:26.883783+00:00",
+      "title": "Information Technology Specialist 2, (SG-18)(NYHELPS) Item# 00742"
+    },
+    "218560": {
+      "emailed_at": "2026-07-02T19:57:25.827922+00:00",
+      "title": "Information Technology Specialist 2, (SG-18)(NYHELPS) Item# 07136"
+    },
+    "218833": {
+      "emailed_at": "2026-07-02T19:57:24.278502+00:00",
+      "title": "Information Technology Specialist 2,(SG-18)(NYHELPS) Item# 00052"
+    },
+    "219018": {
+      "emailed_at": "2026-07-02T19:57:22.784219+00:00",
+      "title": "Information Technology Specialist 2 (Programing)"
+    }
+  },
   "version": 1
 }
-
