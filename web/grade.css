@@ -1,0 +1,19 @@
+.grade-controls {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(90px, .55fr);
+  gap: 18px;
+}
+
+.form-step .grade-controls select,
+.form-step .grade-controls input {
+  font-size: 20px;
+}
+
+.grade-hint {
+  grid-column: auto;
+  margin-top: 12px;
+}
+
+@media (max-width: 520px) {
+  .grade-controls { grid-template-columns: 1fr; }
+}

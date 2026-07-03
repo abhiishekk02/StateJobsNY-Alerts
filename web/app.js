@@ -15,10 +15,6 @@ function makeChips(containerId, name, values) {
 
 makeChips("role-chips", "roles", ROLES);
 makeChips("location-chips", "locations", LOCATIONS);
-const year = new Date().getFullYear();
-const select = document.getElementById("graduation-year");
-for (let value = year + 2; value >= year - 10; value--) select.add(new Option(String(value), String(value)));
-
 const form = document.getElementById("subscribe-form");
 const status = document.getElementById("form-status");
 form.addEventListener("submit", async (event) => {
@@ -26,7 +22,7 @@ form.addEventListener("submit", async (event) => {
   const data = new FormData(form);
   const payload = {
     name: data.get("name")?.trim(), email: data.get("email")?.trim(),
-    graduationYear: Number(data.get("graduationYear")), roles: data.getAll("roles"),
+    gradeLevel: Number(data.get("gradeLevel")), gradeOperator: data.get("gradeOperator"), roles: data.getAll("roles"),
     locations: data.getAll("locations"), consent: data.get("consent") === "on",
   };
   if (!form.reportValidity() || !payload.roles.length || !payload.locations.length) {

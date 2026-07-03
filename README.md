@@ -1,6 +1,6 @@
 # Northstar
 
-Northstar is a free, self-service job alert platform for friends and early-career candidates. A polished GitHub Pages site collects role, location, graduation year, and email preferences. A Cloudflare Worker verifies consent, stores private subscriber data in D1, matches new StateJobsNY vacancies, and delivers alerts through Resend. The existing Python scanner runs on GitHub Actions.
+Northstar is a free, self-service job alert platform for friends and early-career candidates. A polished GitHub Pages site collects role, location, job-grade comparison, and email preferences. A Cloudflare Worker verifies consent, stores private subscriber data in D1, matches new StateJobsNY vacancies, and delivers alerts through Resend. The existing Python scanner runs on GitHub Actions.
 
 ## How it works
 
@@ -73,7 +73,7 @@ For the website, run `python -m http.server 8080 --directory web`. For the Worke
 
 ## Privacy and operating notes
 
-- The service stores name, email, graduation year, preferences, consent timestamp, and delivery history.
+- The service stores name, email, grade rule, preferences, consent timestamp, and delivery history.
 - Avoid logging request bodies or email addresses.
 - Cloudflare D1 is the source of truth for subscriptions; never commit subscriber exports.
 - The project is independent and is not affiliated with New York State.

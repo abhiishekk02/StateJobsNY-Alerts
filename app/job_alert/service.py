@@ -44,13 +44,11 @@ class JobAlertService:
         self.logger = logging.getLogger(__name__)
 
     def run(self) -> RunStats:
-        params = {
-            "searchResults": "Yes",
-            "gradeCompareType": "EQ",
-            "grade": self.config.search.grades[0].zfill(2),
-        }
         broad_search = bool(getattr(self.notifier, "broad_search", False))
+        params = {"searchResults": "Yes"}
         if not broad_search:
+            params["gradeCompareType"] = "EQ"
+            params["grade"] = self.config.search.grades[0].zfill(2)
             for region in self.config.search.regions:
                 params[f"region{region}"] = region
         html = self.client.get(self.config.search.results_url, params)
@@ -65,7 +63,8 @@ class JobAlertService:
                 continue
             detail = parse_job_detail(self.client.get(summary.url), summary)
             if broad_search:
-                is_match = self.matcher.matches_title(detail) and self.matcher.matches_grade(detail)
+                # Subscriber-specific location and grade comparisons happen in the API.
+                is_match = self.matcher.matches_title(detail)
             else:
                 is_match = self.matcher.matches(detail)
             if not is_match:

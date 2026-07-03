@@ -27,10 +27,10 @@ async function sendEmail(env, to, subject, html) {
 async function subscribe(request, env) {
   let body; try { body = await request.json(); } catch { return json({error: "Invalid request."}, 400); }
   const name = String(body.name || "").trim().slice(0, 80), email = cleanEmail(body.email);
-  const year = Number(body.graduationYear), roles = Array.isArray(body.roles) ? [...new Set(body.roles)] : [], locations = Array.isArray(body.locations) ? [...new Set(body.locations)] : [];
-  if (!name || !validEmail(email) || !Number.isInteger(year) || year < 2000 || year > 2100 || !body.consent || !roles.length || !locations.length || roles.some(r => !ROLES[r]) || locations.some(l => !LOCATIONS.includes(l))) return json({error: "Please check the information you entered."}, 422);
+  const gradeLevel = Number(body.gradeLevel), gradeOperator = String(body.gradeOperator || ""), roles = Array.isArray(body.roles) ? [...new Set(body.roles)] : [], locations = Array.isArray(body.locations) ? [...new Set(body.locations)] : [];
+  if (!name || !validEmail(email) || !Number.isInteger(gradeLevel) || gradeLevel < 1 || gradeLevel > 38 || !["lt", "eq", "gt"].includes(gradeOperator) || !body.consent || !roles.length || !locations.length || roles.some(r => !ROLES[r]) || locations.some(l => !LOCATIONS.includes(l))) return json({error: "Please check the information you entered."}, 422);
   const verifyToken = token(), unsubscribeToken = token(), now = new Date().toISOString(), id = crypto.randomUUID();
-  await env.DB.prepare(`INSERT INTO subscribers (id,email,name,graduation_year,roles,locations,status,verification_hash,unsubscribe_hash,consented_at,created_at,updated_at) VALUES (?,?,?,?,?,?,'pending',?,?,?,?,?) ON CONFLICT(email) DO UPDATE SET name=excluded.name,graduation_year=excluded.graduation_year,roles=excluded.roles,locations=excluded.locations,status='pending',verification_hash=excluded.verification_hash,unsubscribe_hash=excluded.unsubscribe_hash,consented_at=excluded.consented_at,verified_at=NULL,unsubscribed_at=NULL,updated_at=excluded.updated_at`).bind(id,email,name,year,JSON.stringify(roles),JSON.stringify(locations),await hash(verifyToken),await hash(unsubscribeToken),now,now,now).run();
+  await env.DB.prepare(`INSERT INTO subscribers (id,email,name,grade_level,grade_operator,roles,locations,status,verification_hash,unsubscribe_hash,consented_at,created_at,updated_at) VALUES (?,?,?,?,?,?,?,'pending',?,?,?,?,?) ON CONFLICT(email) DO UPDATE SET name=excluded.name,grade_level=excluded.grade_level,grade_operator=excluded.grade_operator,roles=excluded.roles,locations=excluded.locations,status='pending',verification_hash=excluded.verification_hash,unsubscribe_hash=excluded.unsubscribe_hash,consented_at=excluded.consented_at,verified_at=NULL,unsubscribed_at=NULL,updated_at=excluded.updated_at`).bind(id,email,name,gradeLevel,gradeOperator,JSON.stringify(roles),JSON.stringify(locations),await hash(verifyToken),await hash(unsubscribeToken),now,now,now).run();
   const api = new URL(request.url).origin;
   try { await sendEmail(env, email, "Confirm your Northstar alerts", `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:40px"><p style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#777">Northstar</p><h1 style="font-size:36px;letter-spacing:-1.5px">One small step, ${escapeHtml(name)}.</h1><p style="color:#666;line-height:1.6">Confirm your email to begin receiving thoughtfully matched New York State opportunities.</p><a href="${api}/api/verify?token=${verifyToken}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:14px 20px;border-radius:99px;margin:12px 0">Confirm my alerts</a><p style="font-size:12px;color:#999">If you didn’t request this, you can ignore this email.</p></div>`); }
   catch { return json({error: "We saved your preferences but couldn’t send confirmation. Please try again."}, 502); }
@@ -53,7 +53,10 @@ function matches(subscriber, job) {
   const roles = JSON.parse(subscriber.roles), locations = JSON.parse(subscriber.locations), haystack = `${job.title} ${job.agency}`.toLowerCase(), place = String(job.location || "").toLowerCase();
   const roleMatch = roles.some(role => ROLES[role].some(word => haystack.includes(word)));
   const locationMatch = locations.some(location => location === "Remote / statewide" || place.includes(location.toLowerCase()) || (location === "New York City" && /new york|manhattan|queens|bronx|brooklyn/.test(place)));
-  return roleMatch && locationMatch;
+  const gradeNumbers = String(job.grade || "").match(/\d+/g) || [];
+  const grades = gradeNumbers.map(Number);
+  const gradeMatch = grades.some(grade => subscriber.grade_operator === "lt" ? grade < subscriber.grade_level : subscriber.grade_operator === "gt" ? grade > subscriber.grade_level : grade === subscriber.grade_level);
+  return roleMatch && locationMatch && gradeMatch;
 }
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[c]); }
 
@@ -61,7 +64,7 @@ async function ingest(request, env) {
   if (!env.INGEST_API_KEY || request.headers.get("Authorization") !== `Bearer ${env.INGEST_API_KEY}`) return json({error: "Unauthorized"}, 401);
   let job; try { job = await request.json(); } catch { return json({error: "Invalid JSON"}, 400); }
   if (!job.job_id || !job.title || !job.url) return json({error: "Missing job fields"}, 422);
-  const {results} = await env.DB.prepare("SELECT id,email,name,roles,locations,unsubscribe_hash FROM subscribers WHERE status='active'").all(); let sent = 0;
+  const {results} = await env.DB.prepare("SELECT id,email,name,grade_level,grade_operator,roles,locations,unsubscribe_hash FROM subscribers WHERE status='active'").all(); let sent = 0;
   for (const subscriber of results.filter(s => matches(s, job))) {
     const prior = await env.DB.prepare("SELECT 1 FROM deliveries WHERE subscriber_id=? AND job_id=?").bind(subscriber.id,String(job.job_id)).first(); if (prior) continue;
     const unsubToken = token(); const unsubHash = await hash(unsubToken); await env.DB.prepare("UPDATE subscribers SET unsubscribe_hash=? WHERE id=?").bind(unsubHash,subscriber.id).run();
