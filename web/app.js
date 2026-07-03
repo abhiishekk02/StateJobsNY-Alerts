@@ -38,6 +38,3 @@ form.addEventListener("submit", async (event) => {
   } catch (error) { status.className = "form-status error"; status.textContent = error.message; }
   finally { button.disabled = false; button.firstElementChild.textContent = "Start my alerts"; }
 });
-
-const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("visible")), {threshold: .12});
-document.querySelectorAll(".principles article, .join-intro, .form-card").forEach((element) => observer.observe(element));

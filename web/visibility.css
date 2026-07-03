@@ -1,0 +1,10 @@
+/* Content must never depend on JavaScript to become readable. */
+.principle-grid article,
+.join-intro,
+.form-card,
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal { animation: none; }
