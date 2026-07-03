@@ -11,4 +11,6 @@ venv/
 logs/*.log
 !logs/.gitkeep
 .DS_Store
-
+node_modules/
+.wrangler/
+.dev.vars

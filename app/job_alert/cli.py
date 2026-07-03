@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 import time
 
@@ -11,7 +12,7 @@ from .client import StateJobsClient
 from .config import load_config
 from .exceptions import JobAlertError
 from .logging_config import configure_logging
-from .notifier import EmailNotifier
+from .notifier import AlertApiNotifier, EmailNotifier
 from .service import JobAlertService
 from .storage import SeenJobStore
 
@@ -22,15 +23,23 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     started = time.monotonic()
     try:
-        config = load_config(args.config)
+        api_url = os.getenv("ALERT_API_URL", "").strip()
+        api_key = os.getenv("ALERT_API_KEY", "").strip()
+        config = load_config(args.config, require_email=not api_url)
         configure_logging(config.log_directory, config.log_level)
         logger = logging.getLogger(__name__)
         logger.info("NY State job alert run started")
+        if api_url:
+            if not api_key:
+                raise JobAlertError("ALERT_API_KEY is required when ALERT_API_URL is set")
+            notifier = AlertApiNotifier(api_url, api_key, config.http.timeout_seconds)
+        else:
+            notifier = EmailNotifier(config.smtp, config.template_file)
         service = JobAlertService(
             config,
             StateJobsClient(config.http),
             SeenJobStore(config.state_file),
-            EmailNotifier(config.smtp, config.template_file),
+            notifier,
         )
         stats = service.run()
         logger.info(
@@ -50,4 +59,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

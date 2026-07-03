@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from typing import Protocol
 
 from .client import StateJobsClient
 from .config import AppConfig
 from .filters import JobMatcher
-from .notifier import EmailNotifier
+from .models import Job
 from .parser import parse_job_detail, parse_search_results
 from .storage import SeenJobStore
+
+
+class Notifier(Protocol):
+    def send(self, job: Job) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -29,7 +34,7 @@ class JobAlertService:
         config: AppConfig,
         client: StateJobsClient,
         store: SeenJobStore,
-        notifier: EmailNotifier,
+        notifier: Notifier,
     ) -> None:
         self.config = config
         self.client = client
@@ -44,8 +49,10 @@ class JobAlertService:
             "gradeCompareType": "EQ",
             "grade": self.config.search.grades[0].zfill(2),
         }
-        for region in self.config.search.regions:
-            params[f"region{region}"] = region
+        broad_search = bool(getattr(self.notifier, "broad_search", False))
+        if not broad_search:
+            for region in self.config.search.regions:
+                params[f"region{region}"] = region
         html = self.client.get(self.config.search.results_url, params)
         summaries = parse_search_results(html, self.config.search.results_url)
         matched = sent = skipped = 0
@@ -57,11 +64,15 @@ class JobAlertService:
             if not self.matcher.matches_title(summary):
                 continue
             detail = parse_job_detail(self.client.get(summary.url), summary)
-            if not self.matcher.matches(detail):
+            if broad_search:
+                is_match = self.matcher.matches_title(detail) and self.matcher.matches_grade(detail)
+            else:
+                is_match = self.matcher.matches(detail)
+            if not is_match:
                 continue
             matched += 1
             self.notifier.send(detail)
-            # Persist only after SMTP confirms delivery; failed alerts are retried next run.
+            # Persist only after the delivery service accepts it; failures are retried.
             self.store.mark_sent(detail.job_id, detail.title)
             sent += 1
             self.logger.info("Alert sent for vacancy %s: %s", detail.job_id, detail.title)

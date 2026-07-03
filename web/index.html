@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Thoughtful NY State job alerts, matched to your goals and delivered without the noise.">
+  <meta name="theme-color" content="#f5f5f7">
+  <title>Northstar — Job alerts, refined.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="#top" aria-label="Northstar home"><span class="brand-mark">N</span> Northstar</a>
+    <a class="nav-link" href="#join">Get alerts</a>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="orb orb-one"></div><div class="orb orb-two"></div>
+      <p class="eyebrow reveal">Built for the next move</p>
+      <h1 class="reveal delay-1">The right role.<br><span>Right when it opens.</span></h1>
+      <p class="hero-copy reveal delay-2">Personalized New York State job alerts for new graduates and early-career talent. Quietly curated. Effortlessly useful.</p>
+      <a class="button button-dark reveal delay-3" href="#join">Create my alert <span aria-hidden="true">↗</span></a>
+      <p class="micro reveal delay-3">Free forever · Unsubscribe anytime</p>
+      <div class="product-card reveal delay-3" aria-label="Example job alert">
+        <div class="card-glow"></div>
+        <div class="product-top"><span class="status-dot"></span><span>New match</span><span class="time">Just now</span></div>
+        <div class="seal">NY</div>
+        <p class="product-kicker">Office of Information Technology Services</p>
+        <h2>Information Technology Specialist 2</h2>
+        <div class="meta"><span>Albany, NY</span><span>Grade 18</span><span>$66K–$82K</span></div>
+        <div class="match-row"><span><strong>96%</strong> profile match</span><span class="mini-button">View role</span></div>
+      </div>
+    </section>
+
+    <section class="principles">
+      <div class="section-heading"><p class="eyebrow">Less searching. More possibility.</p><h2>Job hunting, with the noise removed.</h2></div>
+      <div class="principle-grid">
+        <article><span class="number">01</span><h3>Tell us what matters.</h3><p>Choose the roles and New York locations that fit where you’re headed.</p></article>
+        <article><span class="number">02</span><h3>We watch the openings.</h3><p>Northstar checks official listings throughout the day, even when you don’t.</p></article>
+        <article><span class="number">03</span><h3>Only the good matches.</h3><p>Relevant opportunities arrive in your inbox with everything you need to act.</p></article>
+      </div>
+    </section>
+
+    <section class="join" id="join">
+      <div class="join-intro"><p class="eyebrow">Your next chapter</p><h2>Make opportunity<br>come to you.</h2><p>Set up your private alert in under a minute. We’ll send a confirmation link before anything else.</p></div>
+      <form id="subscribe-form" class="form-card" novalidate>
+        <div class="form-step"><span>01</span><div><label for="name">What should we call you?</label><input id="name" name="name" autocomplete="name" maxlength="80" placeholder="Your first name" required></div></div>
+        <div class="form-step"><span>02</span><div><label for="email">Where should opportunities find you?</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required></div></div>
+        <div class="form-step split"><span>03</span><div><label for="graduation-year">Graduation year</label><select id="graduation-year" name="graduationYear" required><option value="">Select year</option></select></div></div>
+        <fieldset class="form-step"><legend><span>04</span><b>Roles you’re interested in</b></legend><div class="chips" id="role-chips"></div><p class="field-hint">Choose at least one.</p></fieldset>
+        <fieldset class="form-step"><legend><span>05</span><b>Preferred locations</b></legend><div class="chips" id="location-chips"></div><p class="field-hint">Choose at least one.</p></fieldset>
+        <label class="consent"><input type="checkbox" name="consent" required><span>I agree to receive matching job alerts and understand I can unsubscribe anytime.</span></label>
+        <button class="button button-light" type="submit"><span>Start my alerts</span><span aria-hidden="true">→</span></button>
+        <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+  <footer><a class="brand" href="#top"><span class="brand-mark">N</span> Northstar</a><p>Independent alerts for public opportunities in New York.</p><p>Not affiliated with New York State.</p></footer>
+  <script src="config.js"></script><script src="app.js"></script>
+</body>
+</html>

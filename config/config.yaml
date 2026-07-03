@@ -33,6 +33,18 @@ search:
     - "Cloud"
     - "DevOps"
     - "Database"
+    - "Engineer"
+    - "Analyst"
+    - "Finance"
+    - "Financial"
+    - "Accountant"
+    - "Auditor"
+    - "Budget"
+    - "Operations"
+    - "Project"
+    - "Program"
+    - "Communications"
+    - "Public Information"
 
 email:
   recipient: "abhishek.gourishetty2@gmail.com"
@@ -57,4 +69,3 @@ logging:
 
 # Documentation value; GitHub Actions is the authoritative scheduler.
 schedule: "*/15 * * * *"
-

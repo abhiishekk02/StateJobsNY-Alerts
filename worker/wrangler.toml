@@ -1,0 +1,12 @@
+name = "northstar-alert-api"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "northstar-alerts"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[vars]
+SITE_URL = "https://abhiishekk02.github.io/StateJobsNY-Alerts"
+FROM_EMAIL = "Northstar Alerts <alerts@your-domain.com>"

@@ -33,9 +33,12 @@ class JobMatcher:
     def matches_title(self, job: Job) -> bool:
         return any(_contains(job.title, keyword) for keyword in self.config.keywords)
 
+    def matches_grade(self, job: Job) -> bool:
+        return any(_grade_matches(job.grade, grade) for grade in self.config.grades)
+
     def matches(self, job: Job) -> bool:
         return (
             self.matches_title(job)
             and any(_contains(job.location, location) for location in self.config.locations)
-            and any(_grade_matches(job.grade, grade) for grade in self.config.grades)
+            and self.matches_grade(job)
         )

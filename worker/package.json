@@ -1,0 +1,1 @@
+{"name":"northstar-alert-api","private":true,"version":"1.0.0","type":"module","engines":{"node":">=22"},"scripts":{"dev":"wrangler dev","deploy":"wrangler deploy","db:local":"wrangler d1 execute northstar-alerts --local --file=./schema.sql","db:remote":"wrangler d1 execute northstar-alerts --remote --file=./schema.sql"},"devDependencies":{"wrangler":"^4.107.0"}}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import smtplib
+import requests
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
@@ -60,3 +61,37 @@ class EmailNotifier:
                 smtp.send_message(message)
         except (OSError, smtplib.SMTPException) as exc:
             raise NotificationError(f"Could not email vacancy {job.job_id}: {exc}") from exc
+
+
+class AlertApiNotifier:
+    """Submit normalized jobs to the private subscriber delivery API."""
+
+    broad_search = True
+
+    def __init__(self, api_url: str, api_key: str, timeout_seconds: float) -> None:
+        self.url = f"{api_url.rstrip('/')}/api/jobs"
+        self.api_key = api_key
+        self.timeout_seconds = timeout_seconds
+
+    def send(self, job: Job) -> None:
+        try:
+            response = requests.post(
+                self.url,
+                json={
+                    "job_id": job.job_id,
+                    "title": job.title,
+                    "agency": job.agency,
+                    "grade": job.grade,
+                    "salary": job.salary,
+                    "employment_type": job.employment_type,
+                    "location": job.location,
+                    "posting_date": job.posting_date,
+                    "deadline": job.deadline,
+                    "url": job.url,
+                },
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                timeout=self.timeout_seconds,
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            raise NotificationError(f"Could not deliver vacancy {job.job_id} to alert API: {exc}") from exc

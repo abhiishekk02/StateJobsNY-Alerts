@@ -33,6 +33,8 @@ jobs:
 
       - name: Monitor vacancies and send alerts
         env:
+          ALERT_API_URL: ${{ secrets.ALERT_API_URL }}
+          ALERT_API_KEY: ${{ secrets.ALERT_API_KEY }}
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
@@ -58,4 +60,3 @@ jobs:
           git add data/seen_jobs.json
           git commit -m "chore: record emailed job vacancies [skip ci]"
           git push
-
